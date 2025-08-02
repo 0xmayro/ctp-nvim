@@ -1,7 +1,7 @@
 name: Integration Table Generation
 
 on:
-  push:
+  pull_request:
     paths:
       - 'lua/catppuccin/groups/integrations/**.lua'
     branches-ignore:
