@@ -2,7 +2,6 @@ local M = {
 	['aerial.nvim'] = 'aerial',
 	['alpha-nvim'] = 'alpha',
 	['avante.nvim'] = 'avante',
-	['bar.nvim'] = 'test',
 	['barbar.nvim'] = 'barbar',
 	['beacon.nvim'] = 'beacon',
 	['blink.cmp'] = 'blink_cmp',
