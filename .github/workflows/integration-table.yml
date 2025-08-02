@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'lua/catppuccin/groups/integrations/**.lua'
+    branches-ignore:
+      - 'release-please*'
 
 jobs:
   docs:
