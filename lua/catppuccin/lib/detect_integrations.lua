@@ -11,31 +11,33 @@ assert(
 	"before using integration_mappings generate it using the script: `./scripts/generate_integration_mappings_table.lua`"
 )
 
-local installed_plugins = nil
+local installed_plugins = {}
 
 if vim.fn.has "nvim-0.12.0" == 1 then
-	installed_plugins = vim.iter(vim.pack.get()):map(function(plugin) return plugin.spec.name end)
+	vim.list_extend(
+		installed_plugins,
+		vim.iter(vim.pack.get()):map(function(plugin) return plugin.spec.name end):totable()
+	)
 end
 
-if pcall(require, "pckr") then installed_plugins = vim.iter(require("pckr.plugin").plugins_by_name) end
+if pcall(require, "pckr") then vim.list_extend(installed_plugins, require("pckr.plugin").plugins_by_name) end
 
-if pcall(require, "lazy") then installed_plugins = vim.iter(require("lazy.core.config").plugins) end
+if pcall(require, "lazy") then vim.list_extend(installed_plugins, require("lazy.core.config").plugins) end
 
-assert(installed_plugins ~= nil, "must be populated by one of supported plugin managers")
-local seen = {}
-installed_plugins
+local seen = vim.iter(installed_plugins)
 	:map(function(plugin_name)
-		if plugin_name:match "mini.*" then
+		if string.sub(plugin_name, 0, 5) == "mini." then
 			return "mini.nvim"
-		else
-			return plugin_name
 		end
+
+		return plugin_name
 	end)
-	:filter(function(plugin_name)
-		if seen[plugin_name] then return false end
-		seen[plugin_name] = true
-		return true
+	:fold({}, function(s, plugin_name)
+		if s[plugin_name] then return s end
+		s[plugin_name] = true
+		return s
 	end)
+
 function M.create_integrations_table()
 	local integrations = {}
 	local ctp_defaults = require("catppuccin").default_options.integrations
